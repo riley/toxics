@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="css/style.css"/>
+<script src="js/jquery-1.6.1.min.js" type="text/javascript"></script>
+<script src="js/protovis-r3.2.js" type="text/javascript"></script>
+<script src="stocks.js" type="text/javascript"></script>
+</head>
+<body>
+	<script type="text/javascript+protovis">
+	
+	var w = 620,
+		h = 400,
+		leftMargin = 50
+		bottomMargin = 50;
+	
+	var dataRange = 70700,
+		xScale = pv.Scale.linear(0, stocks.length).range(0, w-100),
+		total = pv.Scale.linear(0, dataRange).range(0, h-bottomMargin-20);
+		
+	var activeBar = 122;
+	
+	var labelXPos = 70,
+		labelYPos = 370,
+		source = "Google Finance"
+	
+	var techstocks = new pv.Panel().width(w).height(h)
+		.event("mousemove", pv.Behavior.point(Infinity).collapse("y"));
+	
+	// datalines
+	techstocks.add(pv.Line)
+	.data(stocks)
+	.left(function() leftMargin + xScale(this.index))
+	.bottom(function(d) bottomMargin + total(d.APPL))
+	.height(h)
+	.lineWidth(2)
+	.strokeStyle("orange")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.event("point", function() {activeBar = this.index; return techstocks;})
+	.fillStyle(function() (activeBar == this.index) ? "orange" : "transparent")
+	.size(10);
+	
+	// datalines
+	techstocks.add(pv.Line)
+	.data(stocks)
+	.left(function() leftMargin + xScale(this.index))
+	.bottom(function(d) bottomMargin + total(d.AMZN))
+	.height(h)
+	.lineWidth(2)
+	.strokeStyle("black")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.event("point", function() {activeBar = this.index; return techstocks;})
+	.fillStyle(function() (activeBar == this.index) ? "black" : "transparent")
+	.size(10);
+	
+	// datalines
+	techstocks.add(pv.Line)
+	.data(stocks)
+	.left(function() leftMargin + xScale(this.index))
+	.bottom(function(d) bottomMargin + total(d.GOOG))
+	.height(h)
+	.lineWidth(2)
+	.strokeStyle("red")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.event("point", function() {activeBar = this.index; return techstocks;})
+	.fillStyle(function() (activeBar == this.index) ? "red" : "transparent")
+	.size(10);
+	
+	// datalines
+	techstocks.add(pv.Line)
+	.data(stocks)
+	.left(function() leftMargin + xScale(this.index))
+	.bottom(function(d) bottomMargin + total(d.IBM))
+	.height(h)
+	.lineWidth(2)
+	.strokeStyle("steelblue")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.event("point", function() {activeBar = this.index; return techstocks;})
+	.fillStyle(function() (activeBar == this.index) ? "steelblue" : "transparent")
+	.size(10);
+	
+	//tick marks
+	techstocks.add(pv.Rule)
+	.data(pv.range(0, dataRange, 10000))
+	.bottom(function(d) d / (h+27) * 2 + bottomMargin)
+	.left(leftMargin-5)
+	.right(50)
+	.strokeStyle("lightgray")
+	.add(pv.Label)
+	.text(function(d) "$"+ (d/100) )
+	.textAlign("right")
+	.textBaseline("middle")
+	.textStyle("lightgray")
+	.font("7pt sans-serif");
+	
+	//date labels
+	techstocks.add(pv.Label)
+	.data(pv.range(2000, 2011, 1))
+	.left(function() this.index * (w-leftMargin)/11 + leftMargin)
+	.textAlign("center")
+	.bottom(bottomMargin-20)
+	.font('7pt sans-serif')
+	.textStyle('gray');	
+	
+	//gray lines
+	techstocks.add(pv.Rule)
+	.data(stocks)
+	.left(function() leftMargin + xScale(this.index))
+	.bottom(bottomMargin)
+	.lineWidth(5)
+	.strokeStyle(function() (activeBar == this.index) ? "#efefef" : "transparent") 
+	
+	// white box behind labels
+	techstocks.add(pv.Bar)
+	.bottom(labelYPos - 140)
+	.left(labelXPos - 20)
+	.right(w-labelXPos - 150)
+	.fillStyle("white")
+	
+	// datalines
+	techstocks.add(pv.Line)
+	.data(stocks)
+	.left(function() leftMargin + xScale(this.index))
+	.bottom(function(d) bottomMargin + total(d.MSFT))
+	.height(h)
+	.lineWidth(2)
+	.strokeStyle("green")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.event("point", function() {activeBar = this.index; return techstocks;})
+	.fillStyle(function() (activeBar == this.index) ? "green" : "transparent")
+	.size(10);
+	
+	// animated labels	
+	techstocks.add(pv.Label)
+	.text(function() stocks[activeBar].Date + " Date")
+	.left(labelXPos)
+	.bottom(labelYPos)
+	.font("bold 11pt sans-serif");
+	
+	techstocks.add(pv.Label)
+	.text(function() "Amazon: $" + stocks[activeBar].AMZN/100)
+	.left(labelXPos+10)
+	.bottom(labelYPos - 20)
+	.font("9pt sans-serif")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.fillStyle("black")
+	.size(10)
+	.left(labelXPos+5)
+	.bottom(labelYPos-13);
+	techstocks.render();
+	
+	techstocks.add(pv.Label)
+	.text(function() "Apple: $" + stocks[activeBar].APPL/100)
+	.textStyle('orange')
+	.left(labelXPos+10)
+	.bottom(labelYPos - 40)
+	.font("9pt sans-serif")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.fillStyle("orange")
+	.size(10)
+	.left(labelXPos+5)
+	.bottom(labelYPos-33);
+	techstocks.render();
+	
+	techstocks.add(pv.Label)
+	.text(function() "Microsoft: $" + stocks[activeBar].MSFT/100)
+	.textStyle('green')
+	.left(labelXPos+10)
+	.bottom(labelYPos - 60)
+	.font("9pt sans-serif")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.fillStyle("green")
+	.size(10)
+	.left(labelXPos+5)
+	.bottom(labelYPos-53);
+
+	techstocks.add(pv.Label)
+	.text(function() "IBM: $" + stocks[activeBar].IBM/100)
+	.textStyle('steelblue')
+	.left(labelXPos+10)
+	.bottom(labelYPos - 80)
+	.font("9pt sans-serif")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.fillStyle("steelblue")
+	.size(10)
+	.left(labelXPos+5)
+	.bottom(labelYPos-73);
+	techstocks.render();
+	
+	techstocks.add(pv.Label)
+	.text(function() "Google: $" + stocks[activeBar].GOOG/100)
+	.textStyle("red")
+	.left(labelXPos+10)
+	.bottom(labelYPos - 100)
+	.font("9pt sans-serif")
+	.add(pv.Dot)
+	.strokeStyle(null)
+	.fillStyle("red")
+	.size(10)
+	.left(labelXPos+5)
+	.bottom(labelYPos-93);
+	techstocks.render();	
+
+	//animation panel
+	techstocks.add(pv.Panel)
+	.events("all")
+	.event("point", function() { activeBar = this.index; return techstocks; });
+
+	techstocks.render();
+	
+	</script>
+</body>
+</html>
