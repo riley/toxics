@@ -1,1 +1,6 @@
-p { border: 1px solid red; }
+#lead {
+	width: 25px;
+	height: 25px;
+	background-color: aqua;
+	cursor: pointer;
+}
